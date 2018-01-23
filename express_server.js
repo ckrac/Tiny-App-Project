@@ -11,6 +11,22 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+function generateRandomString() {
+   const vocabulary = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z'];
+   let output = "";
+   for (let i = 0; i < 6; i++) {
+       let index = getRandomInt();
+       output += vocabulary[index];
+   }
+   return output;
+}
+
+function getRandomInt() {
+   min = Math.ceil(0);
+   max = Math.floor(26);
+   return Math.floor(Math.random() * (26 - 0)) + 0;
+}
+
 app.get("/", (req, res) => {
   res.end("Hello!");
 });
@@ -28,9 +44,20 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
+});
+
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id };
   res.render("urls_show", templateVars);
+});
+
+
+
+app.post("/urls", (req, res) => {
+  console.log(req.body);  // debug statement to see POST parameters
+  res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
 app.listen(PORT, () => {
