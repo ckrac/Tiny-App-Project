@@ -11,6 +11,7 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+// function to generate 6 random random alphanumeric
 function generateRandomString() {
    const vocabulary = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z'];
    let output = "";
@@ -23,8 +24,8 @@ function generateRandomString() {
 
 function getRandomInt() {
    min = Math.ceil(0);
-   max = Math.floor(26);
-   return Math.floor(Math.random() * (26 - 0)) + 0;
+   max = Math.floor(25);
+   return Math.floor(Math.random() * (25 - 0)) + 0;
 }
 
 app.get("/", (req, res) => {
@@ -56,7 +57,13 @@ app.get("/urls/:id", (req, res) => {
 
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
+  // console.log(req.body);  // debug statement to see POST parameters
+  var shortURL = generateRandomString();
+  var longURL = req.body.longURL;
+  // console.log(longURL);
+  // console.log(shortURL);
+  urlDatabase[shortURL] = longURL;
+  console.log(urlDatabase);
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
