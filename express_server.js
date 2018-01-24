@@ -44,12 +44,17 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { urls: urlDatabase,
+    username: req.cookies.username
+  };
   res.render("urls_index", templateVars);
 });
 
 // moved above "/urls/:id" because :id is a string and it'll redirect to "/urls/:id" first
 app.get("/urls/new", (req, res) => {
+  let templateVars = { urls: urlDatabase,
+    username: req.cookies.username
+  };
   res.render("urls_new");
 });
 
@@ -70,7 +75,9 @@ app.get("/u/:shortURL", (req, res) => {
 
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id };
+  let templateVars = { shortURL: req.params.id,
+    username: req.cookies.username
+  };
   // console.log(req.params);
   // console.log(req.body);
   res.render("urls_show", templateVars);
@@ -114,6 +121,7 @@ app.post("/urls/:id", (req, res) => {
 
 });
 
+// generate cookie
 app.post("/login", (req, res) => {
   let username = req.body.username
   console.log(username);
