@@ -2,8 +2,11 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser')
+
 
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser())
 app.set("view engine", "ejs");
 
 let urlDatabase = {
@@ -41,12 +44,17 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { urls: urlDatabase,
+    username: req.cookies.username
+  };
   res.render("urls_index", templateVars);
 });
 
 // moved above "/urls/:id" because :id is a string and it'll redirect to "/urls/:id" first
 app.get("/urls/new", (req, res) => {
+  let templateVars = { urls: urlDatabase,
+    username: req.cookies.username
+  };
   res.render("urls_new");
 });
 
@@ -67,7 +75,9 @@ app.get("/u/:shortURL", (req, res) => {
 
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id };
+  let templateVars = { shortURL: req.params.id,
+    username: req.cookies.username
+  };
   // console.log(req.params);
   // console.log(req.body);
   res.render("urls_show", templateVars);
@@ -109,6 +119,19 @@ app.post("/urls/:id", (req, res) => {
   urlDatabase[shortURL] = longURL;
   res.redirect("/urls");
 
+});
+
+// generate cookie
+app.post("/login", (req, res) => {
+  let username = req.body.username
+  console.log(username);
+  res.cookie("username", username);
+  res.redirect("/urls");
+});
+
+app.post("/login/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
