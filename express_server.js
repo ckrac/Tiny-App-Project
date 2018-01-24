@@ -14,7 +14,7 @@ let urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-// function to generate 6 random random alphanumeric
+// function to generate 6 random random alphanumeric ------------//
 function generateRandomString() {
    const vocabulary = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z'];
    let output = "";
@@ -30,6 +30,8 @@ function getRandomInt() {
    max = Math.floor(25);
    return Math.floor(Math.random() * (25 - 0)) + 0;
 }
+//-------------------------------------------//
+
 
 app.get("/", (req, res) => {
   res.end("Hello!");
@@ -84,7 +86,7 @@ app.get("/urls/:id", (req, res) => {
 });
 
 
-
+// post from form page to update urlDatabase
 app.post("/urls", (req, res) => {
   // console.log(req.body);  // debug statement to see POST parameters
   // object shows the key "longURL" because it the the name used in urls_new.ejs form //
@@ -121,7 +123,7 @@ app.post("/urls/:id", (req, res) => {
 
 });
 
-// generate cookie
+// generate cookie when user logs in
 app.post("/login", (req, res) => {
   let username = req.body.username
   console.log(username);
@@ -129,6 +131,7 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
+// respons to a logout button that clears cookies and redirects back to /urls
 app.post("/login/logout", (req, res) => {
   res.clearCookie("username");
   res.redirect("/urls");
