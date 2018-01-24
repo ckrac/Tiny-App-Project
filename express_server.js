@@ -14,6 +14,8 @@ let urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+
+
 // function to generate 6 random random alphanumeric ------------//
 function generateRandomString() {
    const vocabulary = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z'];
@@ -52,15 +54,28 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-// moved above "/urls/:id" because :id is a string and it'll redirect to "/urls/:id" first
+// ------- moved above "/urls/:id" because :id is a string and it'll redirect to "/urls/:id" first
 app.get("/urls/new", (req, res) => {
   let templateVars = { urls: urlDatabase,
     username: req.cookies.username
   };
-  res.render("urls_new");
+  res.render("urls_new", templateVars);
 });
 
-//:shortURL is equal to the key values (6 alpha letters)
+// ------- registration page
+app.get("/register", (req, res) => {
+  let templateVars = { urls: urlDatabase,
+    username: req.cookies.username
+  };
+  res.render("urls_register", templateVars);
+});
+
+app.post("/register/info", (req, res) => {
+  console.log(req.params.email);
+  console.log(req.params.password);
+});
+
+// ------- :shortURL is equal to the key values (6 alpha letters)
 app.get("/u/:shortURL", (req, res) => {
  // shortURL is the key value of the object
   // check what's req to access correct key
@@ -75,7 +90,6 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id,
     username: req.cookies.username
@@ -85,8 +99,7 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-
-// post from form page to update urlDatabase
+// ------- post from form page to update urlDatabase
 app.post("/urls", (req, res) => {
   // console.log(req.body);  // debug statement to see POST parameters
   // object shows the key "longURL" because it the the name used in urls_new.ejs form //
@@ -101,7 +114,7 @@ app.post("/urls", (req, res) => {
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
-// deletes a list in /urls
+// ------- deletes a list in /urls
 app.post("/urls/:id/delete", (req, res) => {
   // console.log(req.params);
   let remove = req.params.id;
@@ -112,7 +125,7 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-// updates /urls with a new urls
+// ------- updates /urls with a new urls
 app.post("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   console.log(shortURL);
@@ -120,10 +133,9 @@ app.post("/urls/:id", (req, res) => {
   console.log(longURL);
   urlDatabase[shortURL] = longURL;
   res.redirect("/urls");
-
 });
 
-// generate cookie when user logs in
+// ------- generate cookie when user logs in
 app.post("/login", (req, res) => {
   let username = req.body.username
   console.log(username);
@@ -131,7 +143,7 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
-// respons to a logout button that clears cookies and redirects back to /urls
+// ------- respons to a logout button that clears cookies and redirects back to /urls
 app.post("/login/logout", (req, res) => {
   res.clearCookie("username");
   res.redirect("/urls");
