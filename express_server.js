@@ -55,6 +55,7 @@ app.get("/u/:shortURL", (req, res) => {
  // shortURL is the key value of the object
   // check what's req to access correct key
   // console.log(req);
+  // req.params stores a list of values from ejs page
   let shortURL = req.params.shortURL
   // console.log(req.params);
   let longURL = urlDatabase[shortURL]
@@ -84,6 +85,17 @@ app.post("/urls", (req, res) => {
   // console.log(urlDatabase);
   // can redirect by using res.redirect(" -where to redirect after submit")
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
+});
+
+// updates /urls
+app.post("/urls/:id/delete", (req, res) => {
+  // console.log(req.params);
+  let remove = req.params.id;
+  // console.log(urlDatabase);
+  // console.log(remove);
+  delete urlDatabase[remove];
+  // console.log(urlDatabase);
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
