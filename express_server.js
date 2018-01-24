@@ -14,6 +14,20 @@ let urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+// ------- user info
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
+
 
 
 // function to generate 6 random random alphanumeric ------------//
