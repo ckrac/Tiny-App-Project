@@ -50,11 +50,18 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+//:shortURL is equal to the key values (6 alpha letters)
 app.get("/u/:shortURL", (req, res) => {
- // let longURL = ...
- let shortURL = req.params.shortURL
- let longURL = urlDatabase[shortURL]
- res.redirect(longURL);
+ // shortURL is the key value of the object
+  // check what's req to access correct key
+  // console.log(req);
+  let shortURL = req.params.shortURL
+  // console.log(req.params);
+  let longURL = urlDatabase[shortURL]
+  // longURL is now set to the value(thelongurl) of the key(shortURL)
+  // redirects to the page eg /u/9sm5xK for google
+  // if i where to input the key value after /u/
+  res.redirect(longURL);
 });
 
 
@@ -67,12 +74,15 @@ app.get("/urls/:id", (req, res) => {
 
 app.post("/urls", (req, res) => {
   // console.log(req.body);  // debug statement to see POST parameters
+  // object shows the key "longURL" because it the the name used in urls_new.ejs form //
   let shortURL = generateRandomString();
+  // to access value pair to the key longURL
   let longURL = req.body.longURL;
   // console.log(longURL);
   // console.log(shortURL);
   urlDatabase[shortURL] = longURL;
-  console.log(urlDatabase);
+  // console.log(urlDatabase);
+  // can redirect by using res.redirect(" -where to redirect after submit")
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
