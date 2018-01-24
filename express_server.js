@@ -68,6 +68,8 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id };
+  // console.log(req.params);
+  // console.log(req.body);
   res.render("urls_show", templateVars);
 });
 
@@ -87,7 +89,7 @@ app.post("/urls", (req, res) => {
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
-// updates /urls
+// deletes a list in /urls
 app.post("/urls/:id/delete", (req, res) => {
   // console.log(req.params);
   let remove = req.params.id;
@@ -96,6 +98,17 @@ app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[remove];
   // console.log(urlDatabase);
   res.redirect("/urls");
+});
+
+// updates /urls with a new urls
+app.post("/urls/:id", (req, res) => {
+  let shortURL = req.params.id;
+  console.log(shortURL);
+  let longURL = req.body.longURL;
+  console.log(longURL);
+  urlDatabase[shortURL] = longURL;
+  res.redirect("/urls");
+
 });
 
 app.listen(PORT, () => {
