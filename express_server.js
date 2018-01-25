@@ -84,9 +84,21 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars);
 });
 
-app.post("/register/info", (req, res) => {
-  console.log(req.params.email);
-  console.log(req.params.password);
+app.post("/register", (req, res) => {
+  let userID = generateRandomString();
+  console.log(userID);
+  // console.log(req.body);
+  let email = req.body.email;
+  console.log(email);
+  let password = req.body.password;
+  console.log(password);
+  users[userID] = {
+    "id": userID,
+    "email": email,
+    "password": password
+  }
+  console.log(users);
+  res.redirect("/urls");
 });
 
 // ------- :shortURL is equal to the key values (6 alpha letters)
