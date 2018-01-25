@@ -47,6 +47,7 @@ function getRandomInt() {
    return Math.floor(Math.random() * (25 - 0)) + 0;
 }
 // function to check for duplicates in an object
+/////there is a find in method to check. change function later
 function checkDuplicate (obj, checkKey, checkValue) {
   for (let element in obj) {
     console.log(element);
@@ -124,9 +125,9 @@ app.post("/register", (req, res) => {
       "email": user_email,
       "password": user_password
     }
-    // console.log(users);
     res.redirect("/urls");
   }
+    console.log(users);
 });
 
 // ------- :shortURL is equal to the key values (6 alpha letters)
@@ -193,7 +194,8 @@ app.post("/urls/:id", (req, res) => {
 app.post("/login", (req, res) => {
   let username = req.body.username
   console.log(username);
-  res.cookie("username", username);
+  console.log(users[username]);
+  res.cookie("username", users[username].id);
   res.redirect("/urls");
 });
 
