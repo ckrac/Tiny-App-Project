@@ -9,7 +9,7 @@
 <body>
      <% include ./partials/_header %>
 
-  <% if (!username) {%>
+  <% if (!user_id) {%>
   <h3>Log in:</h3>
   <form action="/login" method="POST">
     <label for="email">Email:</label>
@@ -20,7 +20,7 @@
   </form>
   <% } else { %>
   <h1>Logged in already</h1>
-  <h3>Username: <%= username %></h3>
+  <h3>user_id: <%= user_id %></h3>
   <form action="/login/logout" method="POST">
     <input type="submit" value="Logout">
   </form>

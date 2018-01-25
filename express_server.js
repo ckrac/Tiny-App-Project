@@ -105,7 +105,7 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase,
-    username: req.cookies.username
+    user_id: req.cookies.user_id
   };
   res.render("urls_index", templateVars);
 });
@@ -113,7 +113,7 @@ app.get("/urls", (req, res) => {
 // ------- moved above "/urls/:id" because :id is a string and it'll redirect to "/urls/:id" first
 app.get("/urls/new", (req, res) => {
   let templateVars = { urls: urlDatabase,
-    username: req.cookies.username
+    user_id: req.cookies.user_id
   };
   res.render("urls_new", templateVars);
 });
@@ -121,7 +121,7 @@ app.get("/urls/new", (req, res) => {
 // ------- registration page
 app.get("/register", (req, res) => {
   let templateVars = { urls: urlDatabase,
-    username: req.cookies.username
+    user_id: req.cookies.user_id
   };
   res.render("urls_register", templateVars);
 });
@@ -168,7 +168,7 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id,
-    username: req.cookies.username
+    user_id: req.cookies.user_id
   };
   // console.log(req.params);
   // console.log(req.body);
@@ -187,7 +187,8 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL] = longURL;
   // console.log(urlDatabase);
   // can redirect by using res.redirect(" -where to redirect after submit")
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  // res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  res.redirect("/urls");
 });
 
 // ------- deletes a list in /urls
@@ -215,7 +216,7 @@ app.post("/urls/:id", (req, res) => {
 // ------- login page
 app.get("/login", (req, res) => {
   let templateVars = { urls: urlDatabase,
-    username: req.cookies.username
+    user_id: req.cookies.user_id
   };
   res.render("urls_login", templateVars);
 });
@@ -233,7 +234,7 @@ app.post("/login", (req, res) => {
     // console.log("These exist");
     const user_id = findUser(users, user_email, user_password);
     // console.log(user_id);
-    res.cookie("username", users[user_id].id);
+    res.cookie("user_id", users[user_id].id);
     res.redirect("/urls");
   } else if (!checkDuplicate(users, "email", user_email)) {
     res.status(403).send("Error: 403 - Email does not exist");
@@ -244,7 +245,7 @@ app.post("/login", (req, res) => {
 
 // ------- respons to a logout button that clears cookies and redirects back to /urls
 app.post("/login/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 });
 
