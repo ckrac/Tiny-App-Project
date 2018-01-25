@@ -10,9 +10,15 @@ app.use(cookieParser())
 app.set("view engine", "ejs");
 
 let urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
+  "b2xVn2":  {
+    user_ID: "userRandomID",
+    longURL: "http://www.lighthouselabs.ca"
+  },
+  "9sm5xK": {
+    user_ID: "ex",
+    longURL: "http://www.google.com"
+  }
+}
 
 // ------- user info
 const users = {
@@ -86,6 +92,8 @@ function findUser (obj, email, password) {
   }
 }
 
+
+
 // console.log(findUser(users, "hello@example.com", "password"));
 
 //-------------------------------------------//
@@ -115,13 +123,6 @@ app.get("/urls/new", (req, res) => {
   let templateVars = { urls: urlDatabase,
     user_id: req.cookies.user_id
   };
-  // for (let e in users) {
-  //   if (users[e].id == user_id) {
-  //     res.render("urls_new", templateVars);
-  //   } else {
-  //     res.redirect("/login");
-  //   }
-  // }
   const user_id = req.cookies.user_id;
   if (users[user_id]) {
     res.render("urls_new", templateVars);
@@ -196,8 +197,10 @@ app.post("/urls", (req, res) => {
   let longURL = req.body.longURL;
   // console.log(longURL);
   // console.log(shortURL);
-  urlDatabase[shortURL] = longURL;
-  // console.log(urlDatabase);
+  const user_id = req.cookies.user_id;
+  //// add user_id to string so url shows who submitted the url
+  urlDatabase[shortURL] = { "user_ID": user_id, "longURL": longURL }
+  console.log(urlDatabase);
   // can redirect by using res.redirect(" -where to redirect after submit")
   // res.send("Ok");         // Respond with 'Ok' (we will replace this)
   res.redirect("/urls");
