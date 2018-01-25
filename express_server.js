@@ -190,6 +190,15 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
+
+// ------- login page
+app.get("/login", (req, res) => {
+  let templateVars = { urls: urlDatabase,
+    username: req.cookies.username
+  };
+  res.render("urls_login", templateVars);
+});
+
 // ------- generate cookie when user logs in
 app.post("/login", (req, res) => {
   let username = req.body.username
