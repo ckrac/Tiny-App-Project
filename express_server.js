@@ -25,6 +25,11 @@ const users = {
     id: "user2RandomID",
     email: "user2@example.com",
     password: "dishwasher-funk"
+  },
+  "ex": {
+    id: "ex",
+    email: "hello@example.com",
+    password: "password"
   }
 }
 
@@ -66,6 +71,22 @@ function checkDuplicate (obj, checkKey, checkValue) {
 //   console.log("hhhh")
 // }
 
+// function to find a user in an object by checking given email and password
+function findUser (obj, email, password) {
+  let user_id;
+  // console.log(email);
+  // console.log(password);
+  for (let element in obj) {
+  // console.log(obj[element].email);
+  // console.log(obj[element].password);
+    if (obj[element].email === email && obj[element].password === password) {
+      user_id = obj[element].id;
+      return user_id;
+    }
+  }
+}
+
+// console.log(findUser(users, "hello@example.com", "password"));
 
 //-------------------------------------------//
 
@@ -127,7 +148,7 @@ app.post("/register", (req, res) => {
     }
     res.redirect("/urls");
   }
-    console.log(users);
+    // console.log(users);
 });
 
 // ------- :shortURL is equal to the key values (6 alpha letters)
@@ -183,9 +204,9 @@ app.post("/urls/:id/delete", (req, res) => {
 // ------- updates /urls with a new urls
 app.post("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
-  console.log(shortURL);
+  // console.log(shortURL);
   let longURL = req.body.longURL;
-  console.log(longURL);
+  // console.log(longURL);
   urlDatabase[shortURL] = longURL;
   res.redirect("/urls");
 });
@@ -201,11 +222,24 @@ app.get("/login", (req, res) => {
 
 // ------- generate cookie when user logs in
 app.post("/login", (req, res) => {
-  let username = req.body.username
-  console.log(username);
-  console.log(users[username]);
-  res.cookie("username", users[username].id);
-  res.redirect("/urls");
+  let user_email = req.body.email
+  // console.log(user_email);
+  let user_password = req.body.password;
+  // console.log(user_password);
+  // console.log(checkDuplicate(users, "email", user_email));
+  // console.log(checkDuplicate(users, "password", user_password));
+  // ----------- check if pass and email exist. if it does, search users and return userid as cookie ------
+  if (checkDuplicate(users, "email", user_email) && checkDuplicate(users, "password", user_password)) {
+    // console.log("These exist");
+    const user_id = findUser(users, user_email, user_password);
+    // console.log(user_id);
+    res.cookie("username", users[user_id].id);
+    res.redirect("/urls");
+  } else if (!checkDuplicate(users, "email", user_email)) {
+    res.status(403).send("Error: 403 - Email does not exist");
+  } else {
+    res.status(403).send("Error: 403 - Wrong password");
+  }
 });
 
 // ------- respons to a logout button that clears cookies and redirects back to /urls
