@@ -115,7 +115,19 @@ app.get("/urls/new", (req, res) => {
   let templateVars = { urls: urlDatabase,
     user_id: req.cookies.user_id
   };
-  res.render("urls_new", templateVars);
+  // for (let e in users) {
+  //   if (users[e].id == user_id) {
+  //     res.render("urls_new", templateVars);
+  //   } else {
+  //     res.redirect("/login");
+  //   }
+  // }
+  const user_id = req.cookies.user_id;
+  if (users[user_id]) {
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
 // ------- registration page
