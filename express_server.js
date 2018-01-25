@@ -46,6 +46,26 @@ function getRandomInt() {
    max = Math.floor(25);
    return Math.floor(Math.random() * (25 - 0)) + 0;
 }
+// function to check for duplicates in an object
+function checkDuplicate (obj, checkKey, checkValue) {
+  for (let element in obj) {
+    console.log(element);
+    console.log(obj[element][checkKey]);
+    if (obj[element][checkKey] == checkValue) {
+      return true;
+    }
+  }
+
+}
+// console.log(checkDuplicate(users, "email", "user2@example.com" ));
+
+// if ((checkDuplicate(users, "email", "user2@example.com" ))) {
+//   console.log("x");
+// } else {
+//   console.log("hhhh")
+// }
+
+
 //-------------------------------------------//
 
 
@@ -86,19 +106,27 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   let userID = generateRandomString();
-  console.log(userID);
+  // console.log(userID);
   // console.log(req.body);
-  let email = req.body.email;
-  console.log(email);
-  let password = req.body.password;
-  console.log(password);
-  users[userID] = {
-    "id": userID,
-    "email": email,
-    "password": password
+  let user_email = req.body.email;
+  // console.log(email);
+  let user_password = req.body.password;
+  // console.log(password);
+  if (!user_email || !user_password)  {
+    // console.log("error");
+    res.status(400).send("Error: 400 - Please submit both an email and password.");
+  } else if (checkDuplicate(users, "email", user_email)) {
+    // console.log("x");
+    res.status(400).send("Error: 400 - Email taken. Please use a new email.");
+  } else {
+    users[userID] = {
+      "id": userID,
+      "email": user_email,
+      "password": user_password
+    }
+    // console.log(users);
+    res.redirect("/urls");
   }
-  console.log(users);
-  res.redirect("/urls");
 });
 
 // ------- :shortURL is equal to the key values (6 alpha letters)
