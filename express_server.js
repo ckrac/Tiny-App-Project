@@ -115,7 +115,14 @@ app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase,
     user_id: req.cookies.user_id
   };
-  res.render("urls_index", templateVars);
+  const user_id = req.cookies.user_id;
+  if (users[user_id]) {
+    res.render("urls_index", templateVars);
+    // res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login");
+  }
+
 });
 
 // ------- moved above "/urls/:id" because :id is a string and it'll redirect to "/urls/:id" first
@@ -181,7 +188,8 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id,
-    user_id: req.cookies.user_id
+    user_id: req.cookies.user_id,
+    urls: urlDatabase
   };
   // console.log(req.params);
   // console.log(req.body);
@@ -210,20 +218,26 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
   // console.log(req.params);
   let remove = req.params.id;
-  // console.log(urlDatabase);
-  // console.log(remove);
-  delete urlDatabase[remove];
-  // console.log(urlDatabase);
+  const user_id = req.cookies.user_id;
+  for (let key in urlDatabase) {
+    if(key == remove && urlDatabase[key].index
+     == user_id) {
+      delete urlDatabase[remove];
+    }
+  }
   res.redirect("/urls");
 });
 
-// ------- updates /urls with a new urls
+// ------- edits /urls with a new urls
 app.post("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
-  // console.log(shortURL);
   let longURL = req.body.longURL;
-  // console.log(longURL);
-  urlDatabase[shortURL] = longURL;
+  const user_id = req.cookies.user_id;
+  for (let key in urlDatabase) {
+    if(key == shortURL && urlDatabase[key].user_ID == user_id) {
+      urlDatabase[shortURL] = { "user_ID": user_id, "longURL": longURL };
+    }
+  }
   res.redirect("/urls");
 });
 
