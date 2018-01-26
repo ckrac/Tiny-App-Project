@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require('bcrypt');
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
@@ -175,8 +176,9 @@ app.post("/register", (req, res) => {
   let user_email = req.body.email;
   // console.log(email);
   let user_password = req.body.password;
-  // console.log(password);
-  if (!user_email || !user_password)  {
+  const hashedPassword = bcrypt.hashSync(user_password, 10);
+  console.log(hashedPassword);
+  if (!user_email || bcrypt.compareSync("purple-monkey-dinosaur", hashedPassword))  {
     // console.log("error");
     res.status(400).send("Error: 400 - Please submit both an email and password.");
   } else if (checkDuplicate(users, "email", user_email)) {
@@ -186,7 +188,7 @@ app.post("/register", (req, res) => {
     users[userID] = {
       "id": userID,
       "email": user_email,
-      "password": user_password
+      "password": hashedPassword
     }
     res.redirect("/urls");
   }
