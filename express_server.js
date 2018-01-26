@@ -4,11 +4,16 @@ const cookieSession = require('cookie-session')
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser')
+// const cookieParser = require('cookie-parser')
 
 
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser())
+// app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  secret: 'key1'
+
+}))
 app.set("view engine", "ejs");
 
 let urlDatabase = {
@@ -137,10 +142,10 @@ app.get("/hello", (req, res) => {
 
 // home page of index list
 app.get("/urls", (req, res) => {
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   const userURL = updateUserURLS(user_id);
   let templateVars = { urls: userURL,
-    user_id: req.cookies.user_id
+    user_id: req.session.user_id
   };
   if (users[user_id]) {
     res.render("urls_index", templateVars);
@@ -152,9 +157,9 @@ app.get("/urls", (req, res) => {
 // ------- moved above "/urls/:id" because :id is a string and it'll redirect to "/urls/:id" first
 app.get("/urls/new", (req, res) => {
   let templateVars = { urls: urlDatabase,
-    user_id: req.cookies.user_id
+    user_id: req.session.user_id
   };
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   if (users[user_id]) {
     res.render("urls_new", templateVars);
   } else {
@@ -165,7 +170,7 @@ app.get("/urls/new", (req, res) => {
 // ------- registration page
 app.get("/register", (req, res) => {
   let templateVars = { urls: urlDatabase,
-    user_id: req.cookies.user_id
+    user_id: req.session.user_id
   };
   res.render("urls_register", templateVars);
 });
@@ -216,7 +221,7 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id,
-    user_id: req.cookies.user_id,
+    user_id: req.session.user_id,
     urls: urlDatabase
   };
   // console.log(req.params);
@@ -233,7 +238,7 @@ app.post("/urls", (req, res) => {
   let longURL = req.body.longURL;
   // console.log(longURL);
   // console.log(shortURL);
-  let user_id = req.cookies.user_id;
+  let user_id = req.session.user_id;
   //// add user_id to string so url shows who submitted the url
   urlDatabase[shortURL] = { "user_ID": user_id, "longURL": longURL }
   console.log(urlDatabase);
@@ -247,7 +252,7 @@ app.post("/urls/:id/delete", (req, res) => {
   // console.log(req.params);
   let remove = req.params.id;
   console.log(remove);
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   console.log(user_id);
   for (let key in urlDatabase) {
     if(key == remove && urlDatabase[key].user_ID == user_id) {
@@ -261,7 +266,7 @@ app.post("/urls/:id/delete", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   let longURL = req.body.longURL;
-  const user_id = req.cookies.user_id;
+  const user_id = req.session.user_id;
   for (let key in urlDatabase) {
     if(key == shortURL && urlDatabase[key].user_ID == user_id) {
       urlDatabase[shortURL] = { "user_ID": user_id, "longURL": longURL };
@@ -274,7 +279,7 @@ app.post("/urls/:id", (req, res) => {
 // ------- login page
 app.get("/login", (req, res) => {
   let templateVars = { urls: urlDatabase,
-    user_id: req.cookies.user_id
+    user_id: req.session.user_id
   };
   res.render("urls_login", templateVars);
 });
@@ -292,7 +297,7 @@ app.post("/login", (req, res) => {
     // console.log("These exist");
     let user_id = findUser(users, user_email,);
     if (bcrypt.compareSync(user_password, users[user_id].password)) {
-      res.cookie("user_id", users[user_id].id);
+      req.session.user_id = users[user_id].id;
       res.redirect("/urls");
     }
   } else if (!checkDuplicate(users, "email", user_email)) {
@@ -304,7 +309,7 @@ app.post("/login", (req, res) => {
 
 // ------- respons to a logout button that clears cookies and redirects back to /urls
 app.post("/login/logout", (req, res) => {
-  res.clearCookie("user_id");
+  req.session = null;
   res.redirect("/urls");
 });
 
