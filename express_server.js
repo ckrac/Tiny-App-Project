@@ -20,16 +20,12 @@ let urlDatabase = {
   }
 }
 
-// let userURL = {
-//   "b2xVn2": {
-//     shortURL : "9sm5xK",
-//     longURL: "http://www.google.com"
-//   },
-//   "userRandomID": {
-//     shortURL: "b2xVn2",
-//     longURL: "http://www.lighthouselabs.ca"
-//   }
-// }
+let userURL = {
+  "b2xVn2": {
+    user_ID : "ex",
+    longURL: "http://www.google.com"
+  },
+}
 
 // ------- user info
 const users = {
@@ -46,7 +42,7 @@ const users = {
   "ex": {
     id: "ex",
     email: "hello@example.com",
-    password: "password"
+    password: "pass"
   }
 }
 
@@ -197,7 +193,7 @@ app.post("/register", (req, res) => {
     // console.log(users);
 });
 
-// ------- :shortURL is equal to the key values (6 alpha letters)
+// ------- :redirects shortURL. it is equal to the key values (6 alpha letters)
 app.get("/u/:shortURL", (req, res) => {
  // shortURL is the key value of the object
   // check what's req to access correct key
@@ -205,7 +201,8 @@ app.get("/u/:shortURL", (req, res) => {
   // req.params stores a list of values from ejs page
   let shortURL = req.params.shortURL
   // console.log(req.params);
-  let longURL = urlDatabase[shortURL]
+  let longURL = urlDatabase[shortURL].longURL
+  // console.log(longURL);
   // longURL is now set to the value(thelongurl) of the key(shortURL)
   // redirects to the page eg /u/9sm5xK for google
   // if i where to input the key value after /u/
