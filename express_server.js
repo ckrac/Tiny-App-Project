@@ -20,6 +20,17 @@ let urlDatabase = {
   }
 }
 
+// let userURL = {
+//   "b2xVn2": {
+//     shortURL : "9sm5xK",
+//     longURL: "http://www.google.com"
+//   },
+//   "userRandomID": {
+//     shortURL: "b2xVn2",
+//     longURL: "http://www.lighthouselabs.ca"
+//   }
+// }
+
 // ------- user info
 const users = {
   "userRandomID": {
@@ -38,6 +49,21 @@ const users = {
     password: "password"
   }
 }
+
+
+// function to add urls into userURLS ------------//
+function updateUserURLS (id) {
+  const userURLS = {};
+  for (let key in urlDatabase)
+    if (urlDatabase[key].user_ID == id ) {
+      // console.log(urlDatabase[key])
+      userURLS[key] = urlDatabase[key];
+    }
+  // console.log(userURLS);
+  return userURLS;
+}
+
+// console.log(updateUserURLS("ex"));
 
 
 
@@ -111,18 +137,18 @@ app.get("/hello", (req, res) => {
   res.end("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+// home page of index list
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase,
+  const user_id = req.cookies.user_id;
+  const userURL = updateUserURLS(user_id);
+  let templateVars = { urls: userURL,
     user_id: req.cookies.user_id
   };
-  const user_id = req.cookies.user_id;
   if (users[user_id]) {
     res.render("urls_index", templateVars);
-    // res.render("urls_new", templateVars);
   } else {
     res.redirect("/login");
   }
-
 });
 
 // ------- moved above "/urls/:id" because :id is a string and it'll redirect to "/urls/:id" first
@@ -185,6 +211,7 @@ app.get("/u/:shortURL", (req, res) => {
   // if i where to input the key value after /u/
   res.redirect(longURL);
 });
+
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id,
