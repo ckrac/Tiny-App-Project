@@ -101,14 +101,14 @@ function checkDuplicate (obj, checkKey, checkValue) {
 // }
 
 // function to find a user in an object by checking given email and password
-function findUser (obj, email, password) {
+function findUser (obj, email) {
   let user_id;
   // console.log(email);
   // console.log(password);
   for (let element in obj) {
   // console.log(obj[element].email);
   // console.log(obj[element].password);
-    if (obj[element].email === email && obj[element].password === password) {
+    if (obj[element].email === email) {
       user_id = obj[element].id;
       return user_id;
     }
@@ -232,7 +232,7 @@ app.post("/urls", (req, res) => {
   let longURL = req.body.longURL;
   // console.log(longURL);
   // console.log(shortURL);
-  const user_id = req.cookies.user_id;
+  let user_id = req.cookies.user_id;
   //// add user_id to string so url shows who submitted the url
   urlDatabase[shortURL] = { "user_ID": user_id, "longURL": longURL }
   console.log(urlDatabase);
@@ -245,10 +245,11 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
   // console.log(req.params);
   let remove = req.params.id;
+  console.log(remove);
   const user_id = req.cookies.user_id;
+  console.log(user_id);
   for (let key in urlDatabase) {
-    if(key == remove && urlDatabase[key].index
-     == user_id) {
+    if(key == remove && urlDatabase[key].user_ID == user_id) {
       delete urlDatabase[remove];
     }
   }
@@ -286,12 +287,13 @@ app.post("/login", (req, res) => {
   // console.log(checkDuplicate(users, "email", user_email));
   // console.log(checkDuplicate(users, "password", user_password));
   // ----------- check if pass and email exist. if it does, search users and return userid as cookie ------
-  if (checkDuplicate(users, "email", user_email) && checkDuplicate(users, "password", user_password)) {
+  if (checkDuplicate(users, "email", user_email)) {
     // console.log("These exist");
-    const user_id = findUser(users, user_email, user_password);
-    // console.log(user_id);
-    res.cookie("user_id", users[user_id].id);
-    res.redirect("/urls");
+    let user_id = findUser(users, user_email,);
+    if (bcrypt.compareSync(user_password, users[user_id].password)) {
+      res.cookie("user_id", users[user_id].id);
+      res.redirect("/urls");
+    }
   } else if (!checkDuplicate(users, "email", user_email)) {
     res.status(403).send("Error: 403 - Email does not exist");
   } else {
