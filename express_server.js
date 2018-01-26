@@ -18,39 +18,25 @@ app.use(cookieSession({
 app.set("view engine", "ejs");
 
 let urlDatabase = {
-  "b2xVn2":  {
-    user_ID: "userRandomID",
+  "teeeest":  {
+    user_ID: "teeeest",
     longURL: "http://www.lighthouselabs.ca"
-  },
-  "9sm5xK": {
-    user_ID: "ex",
-    longURL: "http://www.google.com"
   }
 }
 
 let userURL = {
   "b2xVn2": {
-    user_ID : "ex",
+    user_ID : "teeeest",
     longURL: "http://www.google.com"
   },
 }
 
 // ------- user info
 const users = {
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur"
-  },
- "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
-  },
-  "ex": {
-    id: "ex",
+  "teeeest": {
+    id: "teeeest",
     email: "hello@example.com",
-    password: "pass"
+    password: "hashedpassIshere"
   }
 }
 
