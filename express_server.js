@@ -178,7 +178,7 @@ app.post("/register", (req, res) => {
   let user_password = req.body.password;
   const hashedPassword = bcrypt.hashSync(user_password, 10);
   console.log(hashedPassword);
-  if (!user_email || bcrypt.compareSync("purple-monkey-dinosaur", hashedPassword))  {
+  if (!user_email || !hashedPassword)  {
     // console.log("error");
     res.status(400).send("Error: 400 - Please submit both an email and password.");
   } else if (checkDuplicate(users, "email", user_email)) {
@@ -190,6 +190,7 @@ app.post("/register", (req, res) => {
       "email": user_email,
       "password": hashedPassword
     }
+    console.log(users);
     res.redirect("/urls");
   }
     // console.log(users);
