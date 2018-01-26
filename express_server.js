@@ -85,8 +85,6 @@ function getRandomInt() {
 //------------ checks for a value duplicate//
 function checkDuplicate (obj, checkKey, checkValue) {
   for (let element in obj) {
-    console.log(element);
-    console.log(obj[element][checkKey]);
     if (obj[element][checkKey] == checkValue) {
       return true;
     }
@@ -159,7 +157,6 @@ app.post("/register", (req, res) => {
   let user_email = req.body.email;
   let user_password = req.body.password;
   const hashedPassword = bcrypt.hashSync(user_password, 10);
-  console.log(hashedPassword);
   if (!user_email || !hashedPassword)  {
     res.status(400).send("Error: 400 - Please submit both an email and password.");
   } else if (checkDuplicate(users, "email", user_email)) {
@@ -170,7 +167,6 @@ app.post("/register", (req, res) => {
       "email": user_email,
       "password": hashedPassword
     }
-    console.log(users);
     res.redirect("/urls");
   }
 });
@@ -208,9 +204,7 @@ app.post("/urls", (req, res) => {
 //------------ deletes a list in /urls//
 app.post("/urls/:id/delete", (req, res) => {
   let remove = req.params.id;
-  console.log(remove);
   const user_id = req.session.user_id;
-  console.log(user_id);
   for (let key in urlDatabase) {
     if(key == remove && urlDatabase[key].user_ID == user_id) {
       delete urlDatabase[remove];
